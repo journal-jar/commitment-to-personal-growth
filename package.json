@@ -8,7 +8,6 @@
     "heroku-postbuild": "cd client && npm install && npm run build",
     "start": "node server/server.js --ignore client",
     "develop": "concurrently \"nodemon server/server.js\" \"cd client && npm start\"",
-    "install": "cd server && npm i && cd ../client && npm i",
     "seed": "node server/seeds/seed.js",
     "prod": "NODE_ENV=production cd server && node server.js"
   },
