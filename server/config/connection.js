@@ -1,8 +1,14 @@
+require('dotenv').config({path: '../../.env'});
+
 const { MongoClient } = require('mongodb');
 let _db;
 
+// Connection string to local instance of MongoDB
+const connectionStringURI = process.env.MONGO_CONNECTION_STRING
+console.log("URI:", connectionStringURI);
+
 async function connect() {
-  const client = new MongoClient('mongodb://localhost:27017', { useUnifiedTopology: true });
+  const client = new MongoClient(connectionStringURI, { useUnifiedTopology: true });
   await client.connect();
   _db = client.db('myDatabase');
   console.log("Connected to Database");

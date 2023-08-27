@@ -4,22 +4,12 @@
 // const session = require('express-session');
 require('dotenv').config({path: '../.env'});
 const express = require('express');
-const { MongoClient } = require('mongodb');
 const { connect } = require("./config/connection.js")
 const path = require('path');
 const routes = require('./routes');
 const app = express();
 //define PORT as either 3001 or as process for deployment
 const PORT = process.env.PORT || 3001;
-
-// Connection string to local instance of MongoDB
-const connectionStringURI = process.env.MONGO_CONNECTION_STRING
-
-// Initialize a new instance of MongoClient
-const client = new MongoClient(connectionStringURI);
-let db;
-// Create variable to hold our database name
-const dbName = 'JournalDB';
 
 
 if (process.env.NODE_ENV === 'production') {
