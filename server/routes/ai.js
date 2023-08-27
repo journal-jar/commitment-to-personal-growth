@@ -1,10 +1,11 @@
-require('dotenv').config("../../.env")
+// require('dotenv').config("../../.env")
 const axios = require("axios")
 
 
 function getOpenAiApiKey() {
     try {
         const apiKey = process.env.OPENAI_API_KEY;
+        console.log("ai.js getOpenAiApiKey() apiKey_________", apiKey)
         return apiKey
     } catch (err) {
         return err

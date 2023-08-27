@@ -2,7 +2,7 @@
 // const GoogleStrategy = require('passport-google-oauth20').Strategy;
 // const jwt = require('jsonwebtoken');
 // const session = require('express-session');
-require('dotenv').config({path: '../.env'});
+require('dotenv').config({ path: __dirname + '/../.env' });
 const express = require('express');
 const { connect } = require("./config/connection.js")
 const path = require('path');

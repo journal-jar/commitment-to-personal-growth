@@ -4,7 +4,7 @@ const { getDb } = require("../config/connection.js")
 // /api/entries
 router.get('/', (req, res) => {
   const db = getDb()
-  db.collection('J')
+  db.collection('JC')
     .find({})
     .toArray()
     .then(results => res.json(results))
@@ -15,7 +15,7 @@ router.get('/', (req, res) => {
 
 router.post('/', (req, res) => {
   const db = getDb()
-  db.collection('J').insertOne(
+  db.collection('JC').insertOne(
     { content: req.body.content }
   )
     .then(results => res.json(results))
@@ -26,7 +26,7 @@ router.post('/', (req, res) => {
 
 router.put('/:entry_id', (req, res) => {
   const db = getDb()
-  db.collection('JJ').insertOne(
+  db.collection('JC').insertOne(
     { title: req.body.title, author: req.body.author }
   )
     .then(results => res.json(results))
@@ -37,7 +37,7 @@ router.put('/:entry_id', (req, res) => {
 
 router.get('/:entry_id', (req, res) => {
   const db = getDb()
-  db.collection('JJ')
+  db.collection('JC')
     .findOne({})
     .toArray()
     .then(results => res.json(results))
