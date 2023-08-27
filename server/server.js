@@ -4,14 +4,20 @@
 // const session = require('express-session');
 require('dotenv').config({ path: __dirname + '/../.env' });
 const express = require('express');
-const { connect } = require("./config/connection.js")
+const { connect } = require("./config/connection.js");
 const path = require('path');
 const routes = require('./routes');
 const app = express();
-//define PORT as either 3001 or as process for deployment
 const PORT = process.env.PORT || 3001;
 
+// Middleware for parsing body
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
+// Include your API routes
+app.use(routes);
+
+// For production: static files and catch-all route
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../client/build')));
 
@@ -20,11 +26,10 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-
+// Connect to DB and start server
 connect()
   .then(() => {
     console.log('Connected successfully to MongoDB');
-    // start up express server
     app.listen(PORT, () => {
       console.log(`Example app listening at http://localhost:${PORT}`);
     });
@@ -32,12 +37,6 @@ connect()
   .catch((err) => {
     console.error('Mongo connection error: ', err.message);
   });
-
-
-
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(routes)
 
 
 

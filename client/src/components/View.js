@@ -49,7 +49,7 @@ export default function View() {
                             }
                         `}
                     </style>
-                    {entries.map((entry) => (
+                    {Array.isArray(entries) && entries.map((entry) => (
                         <p style={{ margin: "0px", boxSizing:"border-box", padding: "9px", fontSize: "15px", color: '#ffffff'}}>
                             {entry.content}
                         </p>
