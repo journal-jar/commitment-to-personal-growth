@@ -14,15 +14,23 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-  const _db = getDb()
-  _db.collection('JC').insertOne(
-    { user_id: req.session.user_id.toString(), 
-      content: req.body.content }
-  )
-    .then(results => res.json(results))
-    .catch(err => {
-      if (err) throw err;
-    });
+  const _db = getDb();
+  console.log("entryRoutes.js Post / req.session______", req.session);
+
+  if (req.session && req.session.user_id) {
+    _db.collection('JC').insertOne(
+      {
+        user_id: req.session.user_id.toString(),
+        content: req.body.content
+      }
+    )
+      .then(results => res.json(results))
+      .catch(err => {
+        if (err) throw err;
+      });
+  } else {
+    res.status(401).json({ message: 'Unauthorized. Please log in.' });
+  }
 });
 
 

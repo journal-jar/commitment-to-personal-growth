@@ -1,23 +1,29 @@
-export async function fetchOpenAiApi(prompt, temperature=0.4) {
-    const response = await fetch('/api/openai/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            prompt: prompt,
-            temperature: temperature
-        }),
-    });
+export async function fetchOpenAiApi(prompt, temperature = 0.4) {
+  const response = await fetch('/api/openai/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      prompt: prompt,
+      temperature: temperature,
+    }),
+  });
 
-    // Check if the response is OK before trying to parse it
-    if (!response.ok) {
-        throw new Error(`Network response was not ok: ${response.statusText}`);
-    }
+  // Check if the response is OK before trying to parse it
+  if (!response.ok) {
+    throw new Error(`Network response was not ok: ${response.statusText}`);
+  }
 
-    const promptResponse = await response.json();
-    console.log("fetchOpenAiApi() promptResponse___________", promptResponse);
-    return promptResponse;
+  const promptResponse = await response.json();
+
+  // Check for OpenAI API error
+  if (promptResponse.error) {
+    throw new Error(`OpenAI API Error: ${promptResponse.error}`);
+  }
+
+  console.log("fetchOpenAiApi() promptResponse___________", promptResponse);
+  return promptResponse;
 }
 
 

@@ -10,7 +10,7 @@ function App() {
   const [promptOptionsIsVisible, setPromptOptionsIsVisible] = useState(false)
   const [blurDivIsVisible, setBlurDivIsVisible] = useState(false)
   const [currentPage, setCurrentPage] = useState("chat")
-  const [currentPrompt, setCurrentPrompt] = useState("")
+  const [currentPrompt, setCurrentPrompt] = useState("What are you grateful for today?")
   const [dialogueList, setDialogueList] = useState([]);
 
   return (

@@ -51,7 +51,7 @@ export default function Menu() {
                     <i class="fa-solid fa-xmark" onClick={() => {setPromptOptionsIsVisible(!promptOptionsIsVisible); setBlurDivIsVisible(!blurDivIsVisible)}}
                         style={{alignSelf: "flex-end", fontSize: "30px", color: "#ffffff", boxSizing:"border-box"}}></i>
                 <ul style={{color: "#ffffff", listStyleType: "none", padding: "0px"}}>
-                    <li style={{padding: "5px"}} onClick={() => {console.log("Nav.js onclick"); setCurrentPrompt("What are you grateful for?"); setDialogueList([]) }}>Gratitude</li>
+                    <li style={{padding: "5px"}} onClick={() => {console.log("Nav.js onclick"); setCurrentPrompt("What are you grateful for today?"); setDialogueList([]) }}>Gratitude</li>
                     <li style={{padding: "5px"}} onClick={async () => { var promptResponse = await fetchOpenAiApi("Return an unusual journaling prompt in quotes. Don't say anything besides the journaling prompt."); setCurrentPrompt(promptResponse); setDialogueList([]); }}>Curated</li>
                 </ul>
             </div>}
