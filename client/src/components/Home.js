@@ -12,11 +12,11 @@ const App = () => {
       {!isLoggedIn ? (
         <div className="row">
           <div className="col-md-6">
-            <h2 style={{color:"#ffffff"}}>Login</h2>
+            <h2 style={{color:"#ffffff", boxSizing: "border-box", padding: "19px", margin: "0px"}}>Login</h2>
             <LoginForm />
           </div>
           <div className="col-md-6">
-            <h2 style={{color:"#ffffff"}}>Signup</h2>
+            <h2 style={{color:"#ffffff", boxSizing: "border-box", padding: "19px", margin: "0px"}}>Signup</h2>
             <SignupForm />
           </div>
         </div>

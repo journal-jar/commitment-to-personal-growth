@@ -18,7 +18,9 @@ export default function Main() {
             console.log("Main.js get session_______", data)
             if (data.loggedIn) {
                 setIsLoggedIn(true)
+                console.log("Main.js get session isLoggedIn_______", true)
             }
+            
           })
           .catch(error => {
             console.error('There was an error!', error);
@@ -28,17 +30,21 @@ export default function Main() {
 
     return (
         <div style={{height:"100vh", margin:"0 5%", backgroundColor: "#071952"}}>
-            <Nav/>
-            <Menu/>
-            {currentPage == "home" &&
-            <Home/>
-            }
-            {currentPage == "chat" &&
-            <Chat/>
-            }
-            {currentPage == "view" &&
-            <View/>
-            }
+            {!isLoggedIn ? (
+              <Home/>
+            ) : (
+            <>
+              <Nav/>
+
+              <Menu/>
+              {currentPage == "chat" &&
+                <Chat/>
+              }
+              {currentPage == "view" &&
+                <View/>
+              }
+            </>
+            )}
         </div>
     )
 }

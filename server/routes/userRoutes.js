@@ -6,6 +6,13 @@ const bcrypt = require('bcrypt');
 router.post('/', async (req, res) => {
     try {
         const _db = getDb();
+        
+        // Check if the email already exists in the database
+        const existingUser = await _db.collection('UC').findOne({ email: req.body.email });
+        if (existingUser) {
+            return res.status(409).json({ message: 'Email already exists' });
+        }
+
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
         // Insert into MongoDB
@@ -27,6 +34,7 @@ router.post('/', async (req, res) => {
         res.status(500).json(err);
     }
 });
+
 
 
 // Login

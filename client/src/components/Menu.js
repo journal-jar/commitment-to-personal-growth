@@ -40,7 +40,6 @@ export default function Menu() {
                     <li>Incentives</li>
                     <li>SMS Interface</li>
                     <li>Account</li>
-                    <li onClick={() => setCurrentPage("home")} style={{color: currentPage === "home" ? "#071952" : "#ffffff"}}>Home</li>
                 </ul>
                 {isLoggedIn &&
                     <p onClick={handleLogout} style={{color: "#ffffff"}}>Logout</p>
