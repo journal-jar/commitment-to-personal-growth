@@ -13,6 +13,8 @@ const TextArea = styled.textarea`
 export default function Chat() {
     const { currentPrompt, setCurrentPrompt} = useContext(MasterContext)
     const {dialogueList, setDialogueList} = useContext(MasterContext);
+    const [sendClicked, setSendClicked] = useState(false);
+    const [saveClicked, setSaveClicked] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [userInput, setUserInput] = useState('');
 
@@ -63,6 +65,11 @@ export default function Chat() {
       }
 
       const handleSave = async () => {
+        setSaveClicked(true)
+        setTimeout(() => {
+            setSaveClicked(false)
+            console.log("chat.js setsaveclicked true")
+        }, 5000);
         try {
             var prompt = createSummaryPrompt();
             var content = await fetchOpenAiApi(prompt);
@@ -86,6 +93,11 @@ export default function Chat() {
 
     // Inside your Chat component
     const handleSubmit = async () => {
+        setSendClicked(true)
+        setTimeout(() => {
+            setSendClicked(false)
+            console.log("chat.js setsaveclicked true")
+        }, 5000);
         if (userInput.trim() !== '') {
             setDialogueList(prevDialogues => [...prevDialogues, {'speaker': 'User', 'text': userInput}]);
             setUserInput('');
@@ -117,7 +129,7 @@ export default function Chat() {
                     {dialogueList.map((dialogue, index) => (<p style={{ margin: "0px", boxSizing:"border-box", padding: "9px", fontSize: "15px", color: '#ffffff', backgroundColor: dialogue.speaker === "Bot" ? '#0B666A' : '#071952'}} key={index}>{dialogue.speaker === "Bot" ? `${dialogue.speaker}: ${dialogue.text}`: dialogue.text}</p>))}
                 </div>
                 {errorMessage && <div style={{ color: '#ffffff', fontSize: "15px"}}>{errorMessage}</div>}
-                <button onClick={handleSave} style={{ width:"60px", alignSelf:"flex-end", backgroundColor:"#ffffff", color: "#071952"}}>Save</button>
+                <button disabled={saveClicked} onClick={handleSave} style={{ width:"60px", alignSelf:"flex-end", backgroundColor: saveClicked ? "#0B666A" : "#ffffff", color: "#071952"}}>Save</button>
                 <div style={{width: "100%"}}>
                     <div style={{ position: "static", bottom: "0px", width: "100%", borderTop: "1px solid #ffffff", background: '#071952', display: "flex", alignItems: "start", boxSizing:"border-box", padding: "2%" }}>
                         <TextArea
@@ -127,7 +139,7 @@ export default function Chat() {
                             onKeyDown={handleKeyDown}
                             onChange={(e) => setUserInput(e.target.value)}
                         />
-                        <button style={{padding: "0px", fontSize: "15px", width: "7%", height: "27px", borderRadius: "13px", border: userInput.length > 0 ? "1px solid #ffffff": "1px solid #071952", color: userInput.length > 0 ? "#071952": "#ffffff", backgroundColor: userInput.length > 0 ? "#DEEAF3": "#071952" }} onClick={handleSubmit}>
+                        <button disabled={sendClicked} style={{padding: "0px", fontSize: "15px", width: "7%", height: "27px", borderRadius: "13px", border: userInput.length > 0 ? "1px solid #ffffff": "1px solid #071952", color: userInput.length > 0 ? "#071952": "#ffffff", backgroundColor: userInput.length > 0 ? "#DEEAF3": "#071952" }} onClick={handleSubmit}>
                             <i className="fa-solid fa-paper-plane"></i>
                         </button>
                     </div>
