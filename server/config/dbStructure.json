@@ -1,0 +1,17 @@
+//Users
+{
+    "_id": "uniqueUserId",
+    "email": "user@email.com",
+    "password": "hashedPassword",
+    "journalEntries": [
+      "journalEntryId1",
+      "journalEntryId2"
+    ]
+  }
+
+//Entries
+{
+    "_id": "journalEntryId1",
+    "userId": "uniqueUserId", // Reference to the user who owns this entry
+    "content": "Today was a good day.",
+  }

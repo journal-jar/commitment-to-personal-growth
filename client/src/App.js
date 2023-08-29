@@ -5,6 +5,7 @@ import Main from "./Main.js"
 export const MasterContext = createContext();
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [mainOptionsIsVisible, setMainOptionsIsVisible] = useState(false);
   const [promptOptionsIsVisible, setPromptOptionsIsVisible] = useState(false)
   const [blurDivIsVisible, setBlurDivIsVisible] = useState(false)
@@ -13,7 +14,8 @@ function App() {
   const [dialogueList, setDialogueList] = useState([]);
 
   return (
-    <MasterContext.Provider value={{ 
+    <MasterContext.Provider value={{
+      isLoggedIn, setIsLoggedIn, 
       currentPrompt, setCurrentPrompt,
       dialogueList, setDialogueList,
       currentPage, setCurrentPage,

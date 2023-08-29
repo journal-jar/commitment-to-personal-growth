@@ -1,6 +1,4 @@
-// require('dotenv').config("../../.env")
 const axios = require("axios")
-
 
 function getOpenAiApiKey() {
     try {

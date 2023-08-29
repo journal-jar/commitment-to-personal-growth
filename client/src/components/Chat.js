@@ -79,8 +79,8 @@ export default function Chat() {
     };
 
     return (
-            <div className="chat-box-body" style={{ display: 'flex', flexDirection: 'column', height: "95%" }}>
-                <div className="chat-box-text" style={{ flex: '1 0', overflowY: 'scroll'}}>
+            <div style={{ display: 'flex', flexDirection: 'column', height: "95%" }}>
+                <div style={{ flex: '1 0', overflowY: 'scroll'}}>
                     <style>
                         {`
                             *::-webkit-scrollbar {

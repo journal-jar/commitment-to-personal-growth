@@ -1,14 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { fetchOpenAiApi, createAssistantPrompt } from "../utils/ai";
-import Nav from "./Nav"
-import styled from 'styled-components'
 import { MasterContext } from "../App";
 
-const TextArea = styled.textarea`
-  ::placeholder {
-    color: red;
-  }
-`;
 
 export default function View() {
     const {currentPage} = useContext(MasterContext)

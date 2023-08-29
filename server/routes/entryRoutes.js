@@ -1,11 +1,11 @@
 const router = require('express').Router();
 const { getDb } = require("../config/connection.js")
+const ObjectID = require('mongodb').ObjectID;
 
-// /api/entries
 router.get('/', (req, res) => {
-  const db = getDb()
-  db.collection('JC')
-    .find({})
+  const _db = getDb()
+  _db.collection('JC')
+    .find({ user_id: req.session.user_id.toString() })
     .toArray()
     .then(results => res.json(results))
     .catch(err => {
@@ -14,9 +14,10 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-  const db = getDb()
-  db.collection('JC').insertOne(
-    { content: req.body.content }
+  const _db = getDb()
+  _db.collection('JC').insertOne(
+    { user_id: req.session.user_id.toString(), 
+      content: req.body.content }
   )
     .then(results => res.json(results))
     .catch(err => {
@@ -24,9 +25,10 @@ router.post('/', (req, res) => {
     });
 });
 
+
 router.put('/:entry_id', (req, res) => {
-  const db = getDb()
-  db.collection('JC').insertOne(
+  const _db = getDb()
+  _db.collection('JC').insertOne(
     { title: req.body.title, author: req.body.author }
   )
     .then(results => res.json(results))
@@ -36,8 +38,8 @@ router.put('/:entry_id', (req, res) => {
 });
 
 router.get('/:entry_id', (req, res) => {
-  const db = getDb()
-  db.collection('JC')
+  const _db = getDb()
+  _db.collection('JC')
     .findOne({})
     .toArray()
     .then(results => res.json(results))
