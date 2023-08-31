@@ -12,7 +12,7 @@ MERN (MongoDB, ExpressJS, ReactJS, NodeJS)
 2. For the OpenAI API calls to work, you will need to add an OpenAi API key to the .env file.
 3. To run the application while developing, navigate to the root directory and use "npm run develop". The app will appear in your web browser at port 3000. 
 > The repo is organized with the standard server/client split. The client folder contains a react front end created with the "create react app" command. There is a line in the package.json of the client folder that proxys web traffic from port 3000 to the port that Node is configured for, 3001. 
-4. To successfully run "npm run develop", you will need all the dependencies installed. To achieve this, run the "npm i" command while in each the root, client, and server directories.
+4. To successfully run, you will need all the dependencies installed. To achieve this, run the "npm i" command while in each the root, client, and server directories.
 
 ## Design
 * [Wireframe](https://www.figma.com/file/uzlMSOUEbX4111nrqjxgYw/JournalJar?type=design&node-id=361%3A3193&mode=dev) -(still in development)
