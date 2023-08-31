@@ -18,3 +18,14 @@ MERN (MongoDB, ExpressJS, ReactJS, NodeJS)
 * [Wireframe](https://www.figma.com/file/uzlMSOUEbX4111nrqjxgYw/JournalJar?type=design&node-id=361%3A3193&mode=dev) -(still in development)
 
 * Branding kit -(to be determined)
+
+## Credits
+* Karl Finkel
+* Ayush RoyChowdhury
+* Will R Cline
+
+## Repo owner
+* Will R Cline  
+* willrcline.atx@gmail.com
+* [Linkedin](linkedin.com/in/willrcline)  
+* Slack me or otherwise contact me anytime.
