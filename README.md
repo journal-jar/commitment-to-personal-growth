@@ -21,7 +21,6 @@ MERN (MongoDB, ExpressJS, ReactJS, NodeJS)
 
 ## Credits
 * Karl Finkel
-* Ayush RoyChowdhury
 * Will R Cline
 
 ## Repo owner

@@ -9,9 +9,10 @@ function App() {
   const [mainOptionsIsVisible, setMainOptionsIsVisible] = useState(false);
   const [promptOptionsIsVisible, setPromptOptionsIsVisible] = useState(false)
   const [blurDivIsVisible, setBlurDivIsVisible] = useState(false)
-  const [currentPage, setCurrentPage] = useState("chat")
+  const [currentPage, setCurrentPage] = useState("document")
   const [currentPrompt, setCurrentPrompt] = useState("What are you grateful for today?")
   const [dialogueList, setDialogueList] = useState([]);
+  const [documentText, setDocumentText] = useState('');
 
   return (
     <MasterContext.Provider value={{
@@ -21,7 +22,8 @@ function App() {
       currentPage, setCurrentPage,
       blurDivIsVisible, setBlurDivIsVisible,
       promptOptionsIsVisible, setPromptOptionsIsVisible,
-      mainOptionsIsVisible, setMainOptionsIsVisible}}>
+      mainOptionsIsVisible, setMainOptionsIsVisible,
+      documentText, setDocumentText}}>
       <Router>
         <Routes>
             <Route path="/" element={<Main/>} />

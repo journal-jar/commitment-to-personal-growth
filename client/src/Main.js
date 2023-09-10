@@ -4,6 +4,7 @@ import Nav from "./components/Nav.js"
 import Menu from "./components/Menu.js"
 import Home from "./components/Home.js"
 import Chat from "./components/Chat.js"
+import Document from "./components/Document";
 import View from "./components/View.js"
 import styled from 'styled-components'
 import { MasterContext } from "./App";
@@ -39,6 +40,9 @@ export default function Main() {
               <Menu/>
               {currentPage == "chat" &&
                 <Chat/>
+              }
+              {currentPage == "document" &&
+                <Document/>
               }
               {currentPage == "view" &&
                 <View/>

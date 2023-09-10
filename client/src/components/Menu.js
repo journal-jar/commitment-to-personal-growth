@@ -4,7 +4,7 @@ import { fetchOpenAiApi } from "../utils/ai";
 
 export default function Menu() {
     const { isLoggedIn, setIsLoggedIn, blurDivIsVisible, setBlurDivIsVisible, promptOptionsIsVisible, setPromptOptionsIsVisible, mainOptionsIsVisible, setMainOptionsIsVisible,
-        currentPrompt, setCurrentPrompt, currentPage, setCurrentPage, dialogueList, setDialogueList } = useContext(MasterContext)
+        currentPrompt, setCurrentPrompt, currentPage, setCurrentPage, dialogueList, setDialogueList, documentText, setDocumentText } = useContext(MasterContext)
 
     const logoutFetch = async () => {
         await fetch('/user/logout', {
@@ -35,7 +35,7 @@ export default function Menu() {
                         style={{fontSize: "30px", color: "#ffffff", boxSizing:"border-box"}}></i>
                 <ul style={{flexGrow: "1", color: "#ffffff", listStyleType: "none", padding: "0px"}}>
                     <li onClick={() => setCurrentPage("chat")} style={{color: currentPage === "chat" ? "#071952" : "#ffffff"}}>Chat</li>
-                    <li>Journal</li>
+                    <li onClick={() => setCurrentPage("document")} style={{color: currentPage === "document" ? "#071952" : "#ffffff"}}>Doc</li>
                     <li onClick={() => setCurrentPage("view")} style={{color: currentPage === "view" ? "#071952" : "#ffffff"}}>View</li>
                     <li>Incentives</li>
                     <li>SMS Interface</li>
@@ -46,13 +46,16 @@ export default function Menu() {
                 }
             </div>}
 
-            {promptOptionsIsVisible && currentPage=="chat" &&
+            {promptOptionsIsVisible &&
             <div style={{boxSizing: "border-box", padding: "30px", display: "flex", flexDirection: "column", zIndex:"2", position:"absolute", top:"0px", right:"0px", backgroundColor: "#0B666A", marginRight: "5%", height: "100%", width: "300px", borderLeft: "1px solid #ffffff"}}>
                     <i class="fa-solid fa-xmark" onClick={() => {setPromptOptionsIsVisible(!promptOptionsIsVisible); setBlurDivIsVisible(!blurDivIsVisible)}}
                         style={{alignSelf: "flex-end", fontSize: "30px", color: "#ffffff", boxSizing:"border-box"}}></i>
                 <ul style={{color: "#ffffff", listStyleType: "none", padding: "0px"}}>
-                    <li style={{padding: "5px"}} onClick={() => {console.log("Nav.js onclick"); setCurrentPrompt("What are you grateful for today?"); setDialogueList([]) }}>Gratitude</li>
-                    <li style={{padding: "5px"}} onClick={async () => { var promptResponse = await fetchOpenAiApi("Return an unusual journaling prompt in quotes. Don't say anything besides the journaling prompt."); setCurrentPrompt(promptResponse); setDialogueList([]); }}>Curated</li>
+                    <li style={{padding: "5px"}} onClick={() => {setCurrentPrompt(""); setDocumentText(""); console.log("Nav.js onclick"); setCurrentPrompt(""); setCurrentPrompt("What are you grateful for today?"); setDialogueList([]) }}>Gratitude</li>
+                    {currentPage == "document" &&
+                        <li style={{padding: "5px"}} onClick={() => {setCurrentPrompt(""); setDocumentText(""); console.log("Nav.js onclick"); setCurrentPrompt(""); setCurrentPrompt("Endeavor- " + "\n\n" + "Effort: " + "\n" + "Progress: " + "\n" + "Success: "); setDialogueList([]) }}>Effort, Progress, Success</li>
+                    }
+                    <li style={{padding: "5px"}} onClick={async () => { setCurrentPrompt(""); setDocumentText(""); var promptResponse = await fetchOpenAiApi("Return an unusual journaling prompt in quotes. Don't say anything besides the journaling prompt."); setCurrentPrompt(promptResponse); setDialogueList([]); }}>Curated</li>
                 </ul>
             </div>}
 
