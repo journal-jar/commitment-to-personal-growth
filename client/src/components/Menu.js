@@ -55,6 +55,9 @@ export default function Menu() {
                     {currentPage == "document" &&
                         <li style={{padding: "5px"}} onClick={() => {setCurrentPrompt(""); setDocumentText(""); console.log("Nav.js onclick"); setCurrentPrompt(""); setCurrentPrompt("Endeavor- " + "\n\n" + "Effort: " + "\n" + "Progress: " + "\n" + "Success: "); setDialogueList([]) }}>Effort, Progress, Success</li>
                     }
+                    {currentPage == "document" &&
+                        <li style={{padding: "5px"}} onClick={() => {setCurrentPrompt(""); setDocumentText(""); console.log("Nav.js onclick"); setCurrentPrompt(""); setCurrentPrompt("Convergent Forge, welcome to Journal Jar. You're now at the helm."+ "\n\n" + "Rose is a highlight, Bud is what you're looking forward to, and Thorn is a challenge." + "\n\n" + "Rose: " + "\n" + "Bud: " + "\n" + "Thorn: "); setDialogueList([]) }}>Rose, bud & thorn</li>
+                    }
                     <li style={{padding: "5px"}} onClick={async () => { setCurrentPrompt(""); setDocumentText(""); var promptResponse = await fetchOpenAiApi("Return an unusual journaling prompt in quotes. Don't say anything besides the journaling prompt."); setCurrentPrompt(promptResponse); setDialogueList([]); }}>Curated</li>
                 </ul>
             </div>}
