@@ -34,12 +34,12 @@ export default function Menu() {
                     <i class="fa-solid fa-xmark" onClick={() => {setMainOptionsIsVisible(!mainOptionsIsVisible); setBlurDivIsVisible(!blurDivIsVisible)}}
                         style={{fontSize: "30px", color: "#ffffff", boxSizing:"border-box"}}></i>
                 <ul style={{flexGrow: "1", color: "#ffffff", listStyleType: "none", padding: "0px"}}>
+                    <li onClick={() => setCurrentPage("document")} style={{color: currentPage === "document" ? "#071952" : "#ffffff"}}>Document</li>
                     <li onClick={() => setCurrentPage("chat")} style={{color: currentPage === "chat" ? "#071952" : "#ffffff"}}>Chat</li>
-                    <li onClick={() => setCurrentPage("document")} style={{color: currentPage === "document" ? "#071952" : "#ffffff"}}>Doc</li>
                     <li onClick={() => setCurrentPage("view")} style={{color: currentPage === "view" ? "#071952" : "#ffffff"}}>View</li>
-                    <li>Incentives</li>
+                    {/* <li>Incentives</li>
                     <li>SMS Interface</li>
-                    <li>Account</li>
+                    <li>Account</li> */}
                 </ul>
                 {isLoggedIn &&
                     <p onClick={handleLogout} style={{color: "#ffffff"}}>Logout</p>
