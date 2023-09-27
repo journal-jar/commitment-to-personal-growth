@@ -26,5 +26,5 @@ MERN (MongoDB, ExpressJS, ReactJS, NodeJS)
 ## Repo owner
 * Will R Cline  
 * willrcline.atx@gmail.com
-* [Linkedin](linkedin.com/in/willrcline)  
+* [Linkedin](https://linkedin.com/in/willrcline)  
 * Slack me or otherwise contact me anytime.
