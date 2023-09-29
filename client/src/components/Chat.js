@@ -11,7 +11,13 @@ const TextArea = styled.textarea`
 `;
 
 export default function Chat() {
-    const { currentPrompt, setCurrentPrompt} = useContext(MasterContext)
+    const { currentPrompt, setCurrentPrompt} = useContext(MasterContext);
+
+    // added variables for summaries + tagging
+    const { previousSummary, setPreviousSummary} = useState("");
+    const { previousTags, setPreviousTags} = useState("");
+    const { currentDialogueList, setCurrentDialogueList} = useState([]);
+
     const {dialogueList, setDialogueList} = useContext(MasterContext);
     const [sendClicked, setSendClicked] = useState(false);
     const [saveClicked, setSaveClicked] = useState(false);
@@ -31,12 +37,26 @@ export default function Chat() {
         }
     }
 
+    const createSummaryAndTagsPrompt = () => {
+        const aggregatedDialogueList = currentDialogueList.map(obj => `${obj.speaker}: ${obj.text}`).join(' ||| ');
+
+        prompt = `REQUIRED: ONLY RETURN JSON. Compassionately summarize the following journal entry given the previous summary and tags. Focus more on USER instead of BOT dialogue. Just write a briefer version of the user's thoughts. The summary should be about 25% as long as the conversation itself.\
+        IMPORTANT: MUST return result as json with the format {summary: String, tags: [String]}, where tags are descriptors / tags for the journal, each one word. Maximum number of tags MUST be 15. CRITICAL: DO NOT include anything else besides JSON result. Do not be redundant or repeat anything in the previous summary or tags. \
+        Conversation: ${aggregatedDialogueList},\
+        Past Summary: ${previousSummary},\
+        Past Tags: ${previousTags}
+        `
+        setCurrentDialogueList([]);
+        console.log("createSummaryAndTagsPrompt_______________", prompt)
+        return prompt
+    }
+
     const createSummaryPrompt = () => {
         const aggregatedDialogueList = dialogueList.map(obj => `${obj.speaker}: ${obj.text}`).join('|||');
         
         prompt = `
         Compassionately summarize the following journal entry. Focus much more on what the user was thinking/writing about. It doesn't matter much what the bot says (it's merely there to stimulate the user's growth and reflection). Don't set the context of this being in an intelligent diary. Just write a briefer version of the user's thoughts. The summary should be about 25% as long as the conversation itself.
-        Conversation:
+        Conversation: 
         ${aggregatedDialogueList}
         `
         console.log("createSummaryPrompt_______________", prompt)
@@ -50,6 +70,7 @@ export default function Chat() {
             headers: {
               'Content-Type': 'application/json',
             },
+            // body: JSON.stringify({content: content}),
             body: JSON.stringify({content: content}),
           });
       
@@ -69,9 +90,11 @@ export default function Chat() {
         setTimeout(() => {
             setSaveClicked(false)
             console.log("chat.js setsaveclicked true")
-        }, 5000);
+        }, 5000); 
+        var json;
         try {
-            var prompt = createSummaryPrompt();
+            //var prompt = createSummaryPrompt();
+            var prompt = createSummaryAndTagsPrompt();
             var content = await fetchOpenAiApi(prompt);
             console.log("Chat.js handleSave() content_______", content);
         } catch (error) {
@@ -82,7 +105,19 @@ export default function Chat() {
             return
         }
         try {
-            postEntry(content);
+            json = JSON.parse(content)
+            setPreviousSummary(json['summary'])
+            setPreviousTags(json['tags'])
+        } catch (error) {
+            setErrorMessage("Error parsing OpenAI response into json. Please try again.")
+            setTimeout(() => {
+                setErrorMessage("");
+            }, 5000);
+        }
+
+        json['content'] = prompt;
+        try {
+            postEntry(json);
         } catch (error) {
             setErrorMessage("Error reaching database. Please try again in 30 seconds.")
             setTimeout(() => {
@@ -96,15 +131,19 @@ export default function Chat() {
         setSendClicked(true)
         setTimeout(() => {
             setSendClicked(false)
-            console.log("chat.js setsaveclicked true")
+            console.log("chat.js setsendclicked true")
         }, 5000);
         if (userInput.trim() !== '') {
+            // updating complete and current dialogue lists for user
+            setCurrentDialogueList(prevDialogues => [...prevDialogues, {'speaker': 'User', 'text': userInput}]);
             setDialogueList(prevDialogues => [...prevDialogues, {'speaker': 'User', 'text': userInput}]);
             setUserInput('');
             var prompt = createAssistantPrompt([...dialogueList, {'speaker': 'User', 'text': userInput}]);
             
             try {
                 var promptResponse = await fetchOpenAiApi(prompt);
+                // updating complete and current dialogue lists for bot
+                setCurrentDialogueList(prevDialogues => [...prevDialogues, {'speaker': 'Bot', 'text': promptResponse}]);
                 setDialogueList(prevDialogues => [...prevDialogues, {'speaker': 'Bot', 'text': promptResponse}]);
             } catch (error) {
                 setErrorMessage("An error occurred with OpenAI. Please try again in 30 seconds.");

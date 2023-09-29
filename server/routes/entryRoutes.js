@@ -28,14 +28,22 @@ router.post('/', (req, res) => {
 
   if (req.session && req.session.user_id) {
     // Encrypt content property before storing in the database
-    const encryptedContent = encrypt(req.body.content);
+    const encryptedContent = encrypt(req.body.content['content']);
+    // Currently, store tags as a single string, since encrypt() unction
+    // does not support arrays
+    const encryptedTags = encrypt(req.body.content['tags'].join()); 
+    const encryptedSummary = encrypt(req.body.content['summary']);
 
-    _db.collection('JC').insertOne(
-      {
-        user_id: req.session.user_id.toString(),
-        content: encryptedContent
-      }
-    )
+    var collectionItem = {
+      frameworkId: req.session.user_id.toString(),
+      content: encryptedContent,
+      tags: encryptedTags,
+      summary: encryptedSummary,
+      date_created: Date.now(),
+      date_last_modified: Date.now()
+    }
+
+    _db.collection('JC').insertOne(collectionItem)
       .then(results => res.json(results))
       .catch(err => {
         if (err) throw err;
@@ -44,6 +52,7 @@ router.post('/', (req, res) => {
     res.status(401).json({ message: 'Unauthorized. Please log in.' });
   }
 });
+
 router.put('/:entry_id', (req, res) => {
   const _db = getDb()
   _db.collection('JC').insertOne(
