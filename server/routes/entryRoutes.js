@@ -2,12 +2,12 @@ const router = require('express').Router();
 const { getDb } = require("../config/connection.js")
 const ObjectID = require('mongodb').ObjectID;
 const { encrypt, decrypt } = require("./encryption.js")
-
+const uuid = require("uuid/v4")
 
 router.get('/', (req, res) => {
   const _db = getDb();
   _db.collection('JC')
-    .find({ user_id: req.session.user_id.toString() })
+    .find({ frameworkId: req.session.user_id.toString() })
     .toArray()
     .then(results => {
       // Decrypt content property before sending as response
@@ -16,6 +16,7 @@ router.get('/', (req, res) => {
         content: decrypt(entry.content)
       }));
       res.json(decryptedResults);
+      console.log("This is the result of get from DB: ", decryptedResults);
     })
     .catch(err => {
       if (err) throw err;
@@ -35,7 +36,8 @@ router.post('/', (req, res) => {
     const encryptedSummary = encrypt(req.body.content['summary']);
 
     var collectionItem = {
-      frameworkId: req.session.user_id.toString(),
+      uuid: uuid(),
+      user_id: req.session.user_id.toString(),
       content: encryptedContent,
       tags: encryptedTags,
       summary: encryptedSummary,

@@ -14,9 +14,9 @@ export default function Chat() {
     const { currentPrompt, setCurrentPrompt} = useContext(MasterContext);
 
     // added variables for summaries + tagging
-    const { previousSummary, setPreviousSummary} = useState("");
-    const { previousTags, setPreviousTags} = useState("");
-    const { currentDialogueList, setCurrentDialogueList} = useState([]);
+    const [previousSummary, setPreviousSummary] = useState("");
+    const [previousTags, setPreviousTags] = useState("");
+    const [currentDialogueList, setCurrentDialogueList] = useState([]);
 
     const {dialogueList, setDialogueList} = useContext(MasterContext);
     const [sendClicked, setSendClicked] = useState(false);
@@ -40,11 +40,9 @@ export default function Chat() {
     const createSummaryAndTagsPrompt = () => {
         const aggregatedDialogueList = currentDialogueList.map(obj => `${obj.speaker}: ${obj.text}`).join(' ||| ');
 
-        prompt = `REQUIRED: ONLY RETURN JSON. Compassionately summarize the following journal entry given the previous summary and tags. Focus more on USER instead of BOT dialogue. Just write a briefer version of the user's thoughts. The summary should be about 25% as long as the conversation itself.\
-        IMPORTANT: MUST return result as json with the format {summary: String, tags: [String]}, where tags are descriptors / tags for the journal, each one word. Maximum number of tags MUST be 15. CRITICAL: DO NOT include anything else besides JSON result. Do not be redundant or repeat anything in the previous summary or tags. \
+        prompt = `REQUIRED: ONLY RETURN JSON. Summarize the conversation, and focus more on USER instead of bot dialogue. Don't set the context of this being in an intelligent diary. Just write a briefer version of the user's thoughts. The summary should be about 25% as long as the conversation itself.\
+        IMPORTANT: MUST return result as json with the format {summary: String, tags: [String]}, where tags are descriptors / tags for the journal, each one word. Maximum number of tags MUST be 15. CRITICAL: DO NOT include anything else besides JSON result.\
         Conversation: ${aggregatedDialogueList},\
-        Past Summary: ${previousSummary},\
-        Past Tags: ${previousTags}
         `
         setCurrentDialogueList([]);
         console.log("createSummaryAndTagsPrompt_______________", prompt)
@@ -63,6 +61,7 @@ export default function Chat() {
         return prompt
     }
 
+    // posts entry to db
     const postEntry = async (content) => {
         try {
           const response = await fetch('/entry', {
