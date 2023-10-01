@@ -36,8 +36,8 @@ router.post('/', (req, res) => {
     const encryptedSummary = encrypt(req.body.content['summary']);
 
     var collectionItem = {
-      uuid: uuid(),
       user_id: req.session.user_id.toString(),
+      entry_id: uuid(),
       content: encryptedContent,
       tags: encryptedTags,
       summary: encryptedSummary,
