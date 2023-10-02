@@ -3,6 +3,7 @@ import { fetchOpenAiApi, createAssistantPrompt } from "../utils/ai";
 import Nav from "./Nav"
 import styled from 'styled-components'
 import { MasterContext } from "../App";
+import { NIL } from "uuid";
 
 const TextArea = styled.textarea`
   ::placeholder {
@@ -12,7 +13,7 @@ const TextArea = styled.textarea`
 
 export default function Chat() {
 
-    const CHARACTER_LIMIT = 150;
+    const CHARACTER_LIMIT = 200;
 
     const { currentPrompt, setCurrentPrompt} = useContext(MasterContext);
 
@@ -40,10 +41,15 @@ export default function Chat() {
         }
     }
 
-    const createSummaryAndTagsPrompt = () => {
-        const aggregatedDialogueList = currentDialogueList.map(obj => `${obj.speaker}: ${obj.text}`).join(' ||| ');
+    function dialogueFilter(item) {
+        return item.speaker == "User"
+    }
 
-        prompt = `REQUIRED: ONLY RETURN JSON. Summarize the conversation, and focus more on USER instead of bot dialogue. Don't set the context of this being in an intelligent diary. Just write a briefer version of the user's thoughts. The summary should be about 25% as long as the conversation itself.\
+    const createSummaryAndTagsPrompt = () => {
+        // const aggregatedDialogueList = currentDialogueList.map(obj => `${obj.speaker}: ${obj.text}`).join(' ||| ');
+        const aggregatedDialogueList = currentDialogueList.filter(dialogueFilter).map(obj => `${obj.speaker}: ${obj.text}`).join(' ||| ');
+
+        prompt = `REQUIRED: ONLY RETURN JSON. Summarize the conversation as briefly as possible. Don't set the context of this being in an intelligent diary. Just write a briefer version of the user's thoughts. The summary should be about 25% as long as the conversation itself.\
         IMPORTANT: MUST return result as json with the format {summary: String, tags: [String]}, where tags are descriptors / tags for the journal, each one word. Maximum number of tags MUST be 2. CRITICAL: DO NOT include anything else besides JSON result.\
         Conversation: ${aggregatedDialogueList},\
         `
@@ -53,14 +59,12 @@ export default function Chat() {
     }
 
     const createShortSummaryPrompt = () => {
-        const aggregatedDialogueList = currentDialogueList.map(obj => `${obj.speaker}: ${obj.text}`).join(' ||| ');
 
         prompt = `REQUIRED: ONLY RETURN JSON. Given a previous, larger, summary, shrink it to 50% less. Keep the same major points intact as a brief version of the user's thoughts.\
         IMPORTANT: MUST return result as json with the format {summary: String, tags: [String]}, where tags are descriptors / tags for the journal, each one word. Reduce the number of tags to only important tags. CRITICAL: DO NOT include anything else besides JSON result.\
-        Conversation: ${aggregatedDialogueList},\
+        Summary: ${previousSummary},\
         `
-        setCurrentDialogueList([]);
-        console.log("createSummaryAndTagsPrompt_______________", prompt)
+        console.log("createShortSummary_______________", prompt)
         return prompt
     }
 
@@ -87,24 +91,45 @@ export default function Chat() {
         }
       }
 
-    const generateResponse = async (shorten) => {
+    async function generateResponse(shorten) {
+        var content = ""
+        var prompt = ""
         try {
-            //var prompt = createSummaryPrompt();
-            if (shorten) {
-                var prompt = createShortSummaryPrompt();
-            } else {
-                var prompt = createSummaryAndTagsPrompt();
-            }
-            
-            var content = await fetchOpenAiApi(prompt);
+            prompt = shorten ? createShortSummaryPrompt() : createSummaryAndTagsPrompt()
+
+            content = await fetchOpenAiApi(prompt);
             console.log("Chat.js handleSave() content_______", content);
-            return content;
         } catch (error) {
             setErrorMessage("Error reaching OpenAI. Please try again in 30 seconds.")
             setTimeout(() => {
                 setErrorMessage("");
+                
             }, 5000);
-            return;
+        }
+
+        try {
+            var json = JSON.parse(content)
+            // appending new summary and tags to previous ones
+            json['summary'] = shorten ? json['summary'] : previousSummary + json['summary']
+            json['tags'] = shorten ? json['tags'].join() : previousTags + json['tags'].join()
+            json['content'] = prompt;
+
+            if (shorten) {
+                setPreviousSummary("")
+                setPreviousTags("")
+            } else {
+                setPreviousSummary(previousSummary + json['summary'])
+                setPreviousTags(previousTags + json['tags'])
+            }
+
+            return json
+
+        } catch (error) {
+            setErrorMessage("Error parsing OpenAI response into json. Please try again.")
+            setTimeout(() => {
+                setErrorMessage("");
+            }, 5000);
+            return NIL
         }
     }
 
@@ -114,30 +139,16 @@ export default function Chat() {
             setSaveClicked(false)
             console.log("chat.js setsaveclicked true")
         }, 5000); 
-        var json;
-        var content = generateResponse(false);
-        try {
-            json = JSON.parse(content)
-            // appending new summary and tags to previous ones
-            setPreviousSummary(previousSummary + json['summary'])
-            setPreviousTags(previousTags + json['tags'])
-
-            // checking if summary or tags are too much
-            if (json['summary'].length() > CHARACTER_LIMIT) {
-                content = generateResponse(true);
-                json = JSON.parse(content)
-                setPreviousSummary(json['summary'])
-                setPreviousTags(json['tags'])
-            }
-
-        } catch (error) {
-            setErrorMessage("Error parsing OpenAI response into json. Please try again.")
-            setTimeout(() => {
-                setErrorMessage("");
-            }, 5000);
+        
+        // create summary, tags, and content
+        var json = await generateResponse(false);
+        // checking if summary or tags are too much
+        if (previousSummary.length > CHARACTER_LIMIT) {
+            json = await generateResponse(true);
+            setPreviousSummary(json['summary'])
+            setPreviousTags(json['tags'])
         }
 
-        json['content'] = prompt;
         try {
             postEntry(json);
         } catch (error) {
@@ -146,6 +157,7 @@ export default function Chat() {
                 setErrorMessage("");
             }, 5000);
         }
+        setCurrentDialogueList([])
     };
 
     // Inside your Chat component

@@ -2,7 +2,8 @@ const router = require('express').Router();
 const { getDb } = require("../config/connection.js")
 const ObjectID = require('mongodb').ObjectID;
 const { encrypt, decrypt } = require("./encryption.js")
-const uuid = require("uuid/v4")
+const { v4: uuid } = require('uuid');
+uuid()
 
 router.get('/', (req, res) => {
   const _db = getDb();
@@ -26,13 +27,14 @@ router.get('/', (req, res) => {
 router.post('/', (req, res) => {
   const _db = getDb();
   console.log("entryRoutes.js Post / req.session______", req.session);
+  console.log("the JSON: ", req.body.content)
 
   if (req.session && req.session.user_id) {
     // Encrypt content property before storing in the database
     const encryptedContent = encrypt(req.body.content['content']);
     // Currently, store tags as a single string, since encrypt() unction
     // does not support arrays
-    const encryptedTags = encrypt(req.body.content['tags'].join()); 
+    const encryptedTags = encrypt(req.body.content['tags']); 
     const encryptedSummary = encrypt(req.body.content['summary']);
 
     var collectionItem = {
@@ -42,7 +44,7 @@ router.post('/', (req, res) => {
       tags: encryptedTags,
       summary: encryptedSummary,
       date_created: Date.now(),
-      date_last_modified: Date.now()
+      date_last_modified: Date.now() // TODO: update this when entry is modified  
     }
 
     _db.collection('JC').insertOne(collectionItem)
@@ -54,6 +56,26 @@ router.post('/', (req, res) => {
     res.status(401).json({ message: 'Unauthorized. Please log in.' });
   }
 });
+
+// router.put('/:update_entry', (req, res) => {
+//   const _db = getDb()
+
+//   var updateItem = {
+//     user_id: req.session.user_id.toString(),
+//     entry_id: uuid(),
+//     content: encryptedContent,
+//     tags: encryptedTags,
+//     summary: encryptedSummary,
+//     date_created: Date.now(),
+//     date_last_modified: Date.now() // TODO: update this when entry is modified  
+//   }
+//   _db.collection('JC').insertOne()
+//     .then(results => res.json(results))
+//     .catch(err => {
+//       if (err) throw err;
+//     });
+// });
+
 
 router.put('/:entry_id', (req, res) => {
   const _db = getDb()
